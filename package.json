@@ -7,7 +7,7 @@
   "scripts": {
     "build-ts": "tsc",
     "dev": "npm run build-ts && npm run serve",
-    "serve": "node dist/server.js",
+    "serve": "node dist/index.js",
     "start": "npm run dev"
   },
   "dependencies": {

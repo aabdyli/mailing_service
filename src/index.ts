@@ -8,8 +8,8 @@ import mongoose from 'mongoose'
 import MailLog from './models/MailLog'
 import Order from './models/Order'
 
-if(process.env.MONGOLAB_URI){
-  mongoose.connect(process.env.MONGOLAB_URI,{
+if (process.env.MONGOLAB_URI) {
+  mongoose.connect(process.env.MONGOLAB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   }).then(() => console.log(`MongoDB Connected sucessfully`))
@@ -48,9 +48,9 @@ app.on('processing_error', (err) => {
 });
 
 app.on('message_received', async (data) => {
-  try{
+  try {
     const order = await Order.findById(data.Body).exec()
-    if(order === null) {
+    if (order === null) {
       console.error(`Order not Found`)
       return
     }
@@ -60,11 +60,11 @@ app.on('message_received', async (data) => {
       subject: `Order ${order.orderId} Confirmation`,
       text: order.products.reduce((acc, curr) => acc + ' ' + curr, '')
     }).then(() => {
-        MailLog.create({
-          orderId: order.orderId,
-          emailSent: true
-        }).catch(err => console.error(`The MailLog could not be saved ${err}, Order ID: ${order.orderId}`))
-      })
+      MailLog.create({
+        orderId: order.orderId,
+        emailSent: true
+      }).catch(err => console.error(`The MailLog could not be saved ${err}, Order ID: ${order.orderId}`))
+    })
       .catch(err => console.error(`The eMail could not be sent. Error: ${err}`))
   } catch (error) {
     console.error(`Error on retrieving order from the DB. Error: ${error}`)
@@ -72,7 +72,7 @@ app.on('message_received', async (data) => {
 })
 
 app.on('message_processed', (data) => {
-  setTimeout(() => console.log(`Finished processing message: ${data.Body}`), 1500)
+  console.log(`Message sent successfully for Order ${data.Body}`)
 })
 
 app.start()
